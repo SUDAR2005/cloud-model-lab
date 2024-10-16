@@ -1,6 +1,5 @@
 import dropbox
 # Replace with your Dropbox access token
-#ACCESS_TOKEN = 'sl.B-7kJ5AV9FvCpgRxjB-09kwKuhgog-Z5Ki5I_Ws_UVn4-mft79Xble__Hs2o_v7BL36TfeQABKmX2Z_Vp29MVT0YhyyVWOU6OeOwPhekC4cxLtjBctI8xgjfg6dSNAxSuFvwICtNkrlInAJ4axcGMPE'
 ACCESS_TOKEN ='Your_ACCESS_TOken'
 # Function to upload a file to Dropbox
 def upload_file(fp, dropboxpath):
