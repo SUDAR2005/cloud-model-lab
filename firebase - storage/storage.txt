@@ -1,0 +1,8 @@
+1. Create a virtual Environment
+    => py -m venv myenv
+    => myenv\Script\activate
+2. Install Modules
+    => pip install flask
+    => pip install firebase_admin
+3. The html file is in teplat folder.
+4. run py ./app.py
