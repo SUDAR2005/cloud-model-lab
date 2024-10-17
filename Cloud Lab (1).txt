@@ -1,0 +1,220 @@
+﻿OPEN MP
+https://chatgpt.com/share/670f3c92-a674-800e-9a41-814f8ab99e90
+
+sudo apt update
+sudo apt install build-essential
+
+gcc --version (sudo apt install gcc)
+
+nano hello.c
+
+#include <omp.h>
+#include <stdio.h>
+
+int main() {
+        #pragma omp parallel
+        {
+            printf("Hello from thread %d\n", omp_get_thread_num());
+        }
+        return 0;
+}
+
+gcc -fopenmp -o hello hello.c
+./hello
+
+MPI
+https://chatgpt.com/share/670f441a-5de0-800e-81b9-7535abfaec6f
+
+sudo apt update
+sudo apt install openmpi-bin openmpi-common libopenmpi-dev
+
+nano hello.c
+
+#include <mpi.h>
+#include <stdio.h>
+
+int main(int argc, char** argv) {
+        MPI_Init(NULL, NULL);  // Initialize MPI
+
+        int world_size;
+        MPI_Comm_size(MPI_COMM_WORLD, &world_size);  // Get the number of processes
+
+        int world_rank;
+        MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);  // Get the rank of the process
+
+        printf("Hello from process %d out of %d processes\n", world_rank, world_size);
+
+        MPI_Finalize();  // Finalize MPI
+        return 0;
+}
+
+mpicc -o hello hello.c
+mpirun -np 4 ./hello_mpi
+
+SPARK 
+sudo apt update
+sudo apt install openjdk-11-jdk
+
+java -version
+
+sudo apt install scala
+
+wget https://downloads.apache.org/spark/spark-3.5.3/spark-3.5.3-bin-hadoop3.tgz
+
+tar -xvzf spark-3.5.3-bin-hadoop3.tgz
+
+sudo mv spark-3.5.3-bin-hadoop3 /opt/spark
+
+nano ~/.bashrc
+
+source ~/.bashrc
+
+nano input.txt
+spark-shell
+
+val input= sc.textFile("input.txt")
+
+val counts = input.flatMap(line => line.split(" ")).map(word=>(word,1)).reduceByKey(_+_)
+
+counts.saveAsTextFile("output")
+
+exit
+
+cd output
+
+cat part-00000  
+
+
+CUSTOM API
+
+   * Npm init -y
+   * Npm install express
+   * Npm install joi
+   * Npm install body-parser
+   * Node filename.js
+
+const express = require('express');
+const Joi = require('joi'); //used for validation
+const app = express();
+const bodyParser = require('body-parser');
+app.use(express.json());
+
+
+const books = [
+    { title: 'Harry Potter', id: 1 },
+    { title: 'Twilight', id: 2 },
+    { title: 'Lorien Legacies', id: 3 }
+];
+
+
+// READ Request Handlers
+app.get('/', (req, res) => {
+    res.send('Welcome to Edureka\'s REST API with Node.js Tutorial!!');
+});
+
+
+app.get('/api/books', (req, res) => {
+    res.send(books);
+});
+
+
+app.get('/api/books/:id', (req, res) => {
+    const book = books.find(c => c.id === parseInt(req.params.id));
+
+
+    if (!book) res.status(404).send('<h2 style="font-family: Malgun Gothic; color: darkred;">Ooops... Cant find what you are looking for!</h2>');
+    res.send(book);
+});
+
+
+// CREATE Request Handler
+app.post('/api/books', (req, res) => {
+    const { error } = validateBook(req.body);
+    if (error) {
+        res.status(400).send(error.details[0].message);
+        return;
+    }
+    const book = {
+        id: books.length + 1,
+        title: req.body.title
+    };
+    books.push(book);
+    res.send(book);
+});
+
+
+// UPDATE Request Handler
+app.put('/api/books/:id', (req, res) => {
+    const book = books.find(c => c.id === parseInt(req.params.id));
+    if (!book) res.status(404).send('<h2 style="font-family: Malgun Gothic; color: darkred;">Not Found!! </h2>');
+
+
+    const { error } = validateBook(req.body);
+    if (error) {
+        res.status(400).send(error.details[0].message);
+        return;
+    }
+
+
+    book.title = req.body.title;
+    res.send(book);
+});
+
+
+// DELETE Request Handler
+app.delete('/api/books/:id', (req, res) => {
+    const book = books.find(c => c.id === parseInt(req.params.id));
+    if (!book) res.status(404).send('<h2 style="font-family: Malgun Gothic; color: darkred;"> Not Found!! </h2>');
+
+
+    const index = books.indexOf(book);
+    books.splice(index, 1);
+
+
+    res.send(book);
+});
+
+
+function validateBook(book) {
+    const schema = Joi.object({
+        id: Joi.string().min(1),
+        title: Joi.string().min(2)
+    });
+    return schema.validate(book);
+}
+
+
+// PORT ENVIRONMENT VARIABLE
+const port = process.env.PORT || 8080;
+app.listen(port, () => console.log(`Listening on port ${port}..`));
+
+import React from "react";
+import DropboxChooser from "react-dropbox-chooser";
+
+function Drop() {
+  const onSuccess = (files) => {
+    console.log(files);
+    // Handle successful selection of files
+  };
+
+  const onCancel = () => {
+    console.log("Selection cancelled");
+    // Handle cancellation
+  };
+
+  return (
+    <>
+      <DropboxChooser
+        appKey={"vt9ucbe1hxcgzo6"}
+        success={onSuccess}
+        cancel={onCancel}
+        multiselect={true}
+        extensions={[".mp4"]}
+      >
+        <div className="dropbox-button">Click me!</div>
+      </DropboxChooser>
+    </>
+  );
+}
+
+export default Drop;
