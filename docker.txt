@@ -36,3 +36,5 @@ docker push your-repo-name:latest
 
 
 docker pull your-repo-name
+
+docker run your-repo-name
