@@ -1,0 +1,561 @@
+﻿OPEN MP
+https://chatgpt.com/share/670f3c92-a674-800e-9a41-814f8ab99e90
+
+
+sudo apt update
+sudo apt install build-essential
+
+
+gcc --version (sudo apt install gcc)
+
+
+nano hello.c
+
+
+#include <omp.h>
+#include <stdio.h>
+
+
+int main() {
+        #pragma omp parallel
+        {
+            printf("Hello from thread %d\n", omp_get_thread_num());
+        }
+        return 0;
+}
+
+
+gcc -fopenmp -o hello hello.c
+./hello
+
+
+MPI
+
+
+https://chatgpt.com/share/670f441a-5de0-800e-81b9-7535abfaec6f
+
+
+sudo apt update
+sudo apt install openmpi-bin openmpi-common libopenmpi-dev
+
+
+
+
+
+
+
+
+
+
+nano hello.c
+
+
+#include <mpi.h>
+#include <stdio.h>
+
+
+int main(int argc, char** argv) {
+        MPI_Init(NULL, NULL);  // Initialize MPI
+
+
+        int world_size;
+        MPI_Comm_size(MPI_COMM_WORLD, &world_size);  // Get the number of processes
+
+
+        int world_rank;
+        MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);  // Get the rank of the process
+
+
+        printf("Hello from process %d out of %d processes\n", world_rank, world_size);
+
+
+        MPI_Finalize();  // Finalize MPI
+        return 0;
+}
+
+
+mpicc -o hello hello.c
+mpirun -np 4 ./hello_mpi
+
+
+
+
+DOCKER
+
+
+sudo apt update
+
+
+sudo apt install apt-transport-https ca-certificates curl software-properties-common
+
+
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+
+
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+
+sudo apt update
+sudo apt install docker-ce docker-ce-cli containerd.io
+
+
+sudo docker --version
+(to use docker -change to root user sudo su)
+
+
+HADOOP IN DOCKER
+
+
+docker pull bde2020/hadoop-namenode
+
+
+docker search hadoop
+
+
+docker run -d --name hadoop-namenode -e CLUSTER_NAME=my-cluster-name bde2020/hadoop-namenode
+
+
+docker ps
+
+
+docker logs hadoop-namenode
+
+
+docker exec -it hadoop-namenode /bin/bash
+
+
+hadoop version
+
+
+Running prgm in hadoop (HADOOP EETHUKU MEALA MUDIYALA)
+
+
+Copying from local machine to hadoop container
+
+
+docker cp /root/WordCount.java 4b6404f631ac:/root/  (those no. should be ur container id)
+
+
+javac -classpath $(hadoop classpath) WordCount.java
+
+
+
+
+SPARK 
+
+
+sudo apt update
+sudo apt install openjdk-11-jdk
+
+
+java -version
+
+
+sudo apt install scala
+
+
+wget https://downloads.apache.org/spark/spark-3.5.3/spark-3.5.3-bin-hadoop3.tgz
+
+
+tar -xvzf spark-3.5.3-bin-hadoop3.tgz
+
+
+sudo mv spark-3.5.3-bin-hadoop3 /opt/spark
+
+
+nano ~/.bashrc
+
+
+Copy paste at bottom of above file
+
+
+export SPARK_HOME=/opt/spark
+export PATH=$PATH:$SPARK_HOME/bin
+
+
+Close the file
+
+
+source ~/.bashrc
+
+
+spark-shell
+If not working : spark-shell --conf "spark.driver.bindAddress=localhost"
+
+
+Running word count in scala (SPARK)
+
+
+nano input.txt
+
+
+spark-shell
+
+
+
+
+val inputf= sc.textFile("input.txt")
+
+
+
+
+val counts = input.flatMap(line => line.split(" ")).map(word=>(word,1)).reduceByKey(_+_)
+
+
+counts.saveAsTextFile("output")
+
+
+exit(ctrl D)
+
+
+cd output
+
+
+Cat part-00000  
+
+
+If not working try these commands{
+
+
+sudo apt update
+
+
+java -version
+
+
+sudo apt install scala
+
+
+Download apache spark from https://www.apache.org/dyn/closer.lua/spark/spark-3.5.3/spark-3.5.3-bin-hadoop3.tgz
+
+
+cd Downloads
+
+
+ls
+
+
+tar xvf spark-3.5.3-bin-hadoop3.tgz
+
+
+sudo mv spark-3.5.3-bin-hadoop3 /usr/local/spark
+
+
+cd /usr/local/
+
+
+ls
+
+
+cd
+
+
+nano ~/.bashrc
+
+
+add  
+export PATH=$PATH:/usr/local/spark/bin (or 
+export SPARK_HOME=/opt/spark
+export PATH=$PATH:$SPARK_HOME/bin)
+ 
+at the end and save -> 
+
+
+exit
+
+
+source ~/.bashrc
+
+
+spark-shell
+
+
+println("Hello,World!") 
+
+
+create a file, input.txt in tce id (nano input.txt)
+
+
+IN SPARK SHELL
+
+
+val inputfile=sc.textFile("input.txt")
+
+
+val counts = inputfile.flatMap(line => line.split("  ")).map(word=>(word,1)).reduceByKey(_+_)
+
+
+counts.saveAsTextFile("output")
+IN TCE ID
+
+
+cd output
+
+
+ls
+
+
+cat part-00000
+}
+
+
+AUTH0
+1. Open auth0
+2. Right side application > create application
+3. Choose single page application
+4. Choose react
+5. Then open auth0 docs 
+6. Choose spa>react>integrate with existing>choose your application name given during step 2
+7. Remove the backslashes
+8.   9. npm install @auth0/auth0-react
+10. index.js
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import './index.css';
+import App from './App';
+import reportWebVitals from './reportWebVitals';
+import { Auth0Provider } from '@auth0/auth0-react';
+
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+  <React.StrictMode><Auth0Provider
+  domain="dev-12x3h0jluhqv6a1h.us.auth0.com"
+  clientId=""
+  authorizationParams={{
+    redirect_uri: window.location.origin
+  }}
+>
+  <App />
+</Auth0Provider>
+  </React.StrictMode>
+);
+
+
+reportWebVitals();
+   11. App.js
+import logo from './logo.svg';
+import { useAuth0 } from "@auth0/auth0-react";
+import './App.css';
+
+
+function App() {
+  const {user, loginWithRedirect } = useAuth0();
+  return (
+    <div className="App">
+      <p>Hi {user.name}</p>
+      <button onClick={() => loginWithRedirect()}>Auth0</button>
+      <br></br>
+      <input type="text"></input>
+      <br></br>
+      <input type="text"></input>
+      <br></br>
+      <button>DB</button>
+      <br></br>
+      <button>dropbox</button>
+    </div>
+  );
+}
+
+
+export default App;
+
+
+DROPBOX
+
+
+   * Dropbox.com/developers
+   * Create apps
+   * In choose api click on scoped access
+   * Full Dropbox
+   * Give name
+   * In permission enable file.content.read, file.content.write
+   * Generate access token and copy nd replace in code(22)
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Dropbox File Management</title>
+    <script src="https://unpkg.com/dropbox/dist/Dropbox-sdk.min.js"></script>
+</head>
+<body>
+    <h1>DropBox File Management</h1>
+
+
+    <h3>File Upload</h3>
+    <input type="file" id="file-Input">
+    <button id="Upload-btn">Upload file</button>
+
+
+    <h3>File Download</h3>
+    <input type="text" id="file-Download">
+    <button id="Download-btn">Download file</button>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const dbx = new Dropbox.Dropbox({ accessToken: '' });
+
+
+            // Upload file
+            document.getElementById('Upload-btn').addEventListener('click', async () => {
+                const file = document.getElementById('file-Input').files[0];
+                if (file) {
+                    try {
+                        const response = await dbx.filesUpload({ path: '/Booklend/' + file.name, contents: file });
+                        alert('File uploaded successfully!');
+                    } catch (error) {
+                        alert('Error uploading file: ' + (error.error ? JSON.stringify(error.error) : error.message));
+                    }d
+                }
+            });
+
+
+            // Download file
+            document.getElementById('Download-btn').addEventListener('click', async () => {
+                const filename = document.getElementById('file-Download').value;
+                if (!filename) {
+                    alert('Error: No file name provided for download.');
+                    return;
+                }
+
+
+                const fpath = '/Booklend/' + filename;  // Use the correct filename
+
+
+                try {
+                    const resp = await dbx.filesDownload({ path: fpath });
+                    const blob = resp.result.fileBlob;
+                    const downloadUrl = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = downloadUrl;
+                    a.download = filename;  // Ensure the right variable is used here
+                    a.click();
+                    URL.revokeObjectURL(downloadUrl);  // Clean up URL
+                } catch (error) {
+                    alert('Error downloading file: ' + (error.error ? JSON.stringify(error.error) : error.message));
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+CUSTOM API
+
+
+   * Npm init -y
+   * Npm install express
+   * Npm install joi
+   * Npm install body-parser
+   * Node filename.js
+
+
+const express = require('express');
+const Joi = require('joi'); //used for validation
+const app = express();
+const bodyParser = require('body-parser');
+app.use(express.json());
+
+
+const books = [
+    { title: 'Harry Potter', id: 1 },
+    { title: 'Twilight', id: 2 },
+    { title: 'Lorien Legacies', id: 3 }
+];
+
+
+// READ Request Handlers
+app.get('/', (req, res) => {
+    res.send('Welcome to Edureka\'s REST API with Node.js Tutorial!!');
+});
+
+
+app.get('/api/books', (req, res) => {
+    res.send(books);
+});
+
+
+app.get('/api/books/:id', (req, res) => {
+    const book = books.find(c => c.id === parseInt(req.params.id));
+
+
+    if (!book) res.status(404).send('<h2 style="font-family: Malgun Gothic; color: darkred;">Ooops... Cant find what you are looking for!</h2>');
+    res.send(book);
+});
+
+
+// CREATE Request Handler
+app.post('/api/books', (req, res) => {
+    const { error } = validateBook(req.body);
+    if (error) {
+        res.status(400).send(error.details[0].message);
+        return;
+    }
+    const book = {
+        id: books.length + 1,
+        title: req.body.title
+    };
+    books.push(book);
+    res.send(book);
+});
+
+
+// UPDATE Request Handler
+app.put('/api/books/:id', (req, res) => {
+    const book = books.find(c => c.id === parseInt(req.params.id));
+    if (!book) res.status(404).send('<h2 style="font-family: Malgun Gothic; color: darkred;">Not Found!! </h2>');
+
+
+    const { error } = validateBook(req.body);
+    if (error) {
+        res.status(400).send(error.details[0].message);
+        return;
+    }
+
+
+    book.title = req.body.title;
+    res.send(book);
+});
+
+
+// DELETE Request Handler
+app.delete('/api/books/:id', (req, res) => {
+    const book = books.find(c => c.id === parseInt(req.params.id));
+    if (!book) res.status(404).send('<h2 style="font-family: Malgun Gothic; color: darkred;"> Not Found!! </h2>');
+
+
+    const index = books.indexOf(book);
+    books.splice(index, 1);
+
+
+    res.send(book);
+});
+
+
+function validateBook(book) {
+    const schema = Joi.object({
+        id: Joi.string().min(1),
+        title: Joi.string().min(2)
+    });
+    return schema.validate(book);
+}
+
+
+// PORT ENVIRONMENT VARIABLE
+const port = process.env.PORT || 8080;
+app.listen(port, () => console.log(`Listening on port ${port}..`));
