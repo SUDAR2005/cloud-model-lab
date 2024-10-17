@@ -17,13 +17,15 @@ export SPARK_HOME=/opt/spark
 export PATH=$SPARK_HOME/bin:$PATH
 
 source ~/.bashrc
-spark-shell
+
 cat >> bharani.txt #any file name
 i am tharkuri thank i am bharani #text
+
+spark-shell
 val inputfile = sc.textFile("bharani.txt")
 
-scala> val counts = inputfile.flatMap(line=>line.split(" ")).map(word => (word,1)).reduceByKey(_+_)
-scala> counts.saveAsTextFile("output1")
+val counts = inputfile.flatMap(line=>line.split(" ")).map(word => (word,1)).reduceByKey(_+_)
+counts.saveAsTextFile("output1")
 # get out of scala
 cat output1.txt
 cd output1
