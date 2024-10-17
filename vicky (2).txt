@@ -1,5 +1,9 @@
 
 sudo apt install default-jdk
+if scala not installed run: 
+  sudo rm /var/lib/dpkg/lock-frontend
+  sudo rm /var/lib/dpkg/lock
+  sudo dpkg --configure -a
 sudo apt install scala -y
 scala -version
 https://dlcdn.apache.org/spark/spark-3.5.3/spark-3.5.3-bin-hadoop3.tgz  --in chrome
