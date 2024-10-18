@@ -1,5 +1,5 @@
 1. Create Virt Env. and activate
-    => python -m venev myenv
+    => python -m venv myenv
     => myenv\Scripts\activate
 2. Install
     => pip install dropbox
